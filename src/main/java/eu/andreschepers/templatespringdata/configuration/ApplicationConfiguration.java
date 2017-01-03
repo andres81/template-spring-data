@@ -15,7 +15,6 @@
  */
 package eu.andreschepers.templatespringdata.configuration;
 
-import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -32,7 +31,7 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan(basePackages = {"eu.andreschepers.templatespringdata"})
-@PropertySource({"classpath:properties/application.properties"})
+@PropertySource({"classpath:application.properties"})
 @EnableJpaRepositories("eu.andreschepers.templatespringdata.repositories")
 @EnableTransactionManagement
 public class ApplicationConfiguration {
@@ -40,7 +39,7 @@ public class ApplicationConfiguration {
     @Autowired
     private Environment env;
 
-    @Bean
+    @Bean(name="datasource")
     public DataSource dataSource() {
 
         try {
@@ -64,20 +63,9 @@ public class ApplicationConfiguration {
         return ds;
     }
 
-    @Bean(initMethod="migrate")
-    public Flyway flyway() {
-        Flyway flyway = new Flyway();
-        flyway.setBaselineOnMigrate(true);
-        flyway.setDataSource(dataSource());
-        Boolean flywayClean = env.getProperty("db.flyway.clean", Boolean.class);
-        if(flywayClean != null && flywayClean) flyway.clean();
-        return flyway;
-    }
-
     @Bean
-    @DependsOn("flyway")
+    @DependsOn("datasource")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
@@ -97,7 +85,6 @@ public class ApplicationConfiguration {
     public JpaTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-
         return transactionManager;
     }
 

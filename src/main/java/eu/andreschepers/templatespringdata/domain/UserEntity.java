@@ -15,8 +15,6 @@
  */
 package eu.andreschepers.templatespringdata.domain;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.UUID;
 

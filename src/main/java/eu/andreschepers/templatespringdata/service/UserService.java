@@ -21,8 +21,5 @@ import eu.andreschepers.templatespringdata.service.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
-
     UserEntity add(UserDTO added);
-    List<UserEntity> findAll();
-    UserEntity update(UserDTO updated);
 }

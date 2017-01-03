@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 public class DefaultUserService implements UserService {
@@ -38,19 +37,5 @@ public class DefaultUserService implements UserService {
         userEntity.setUserID(added.getUserID());
 
         return userRepo.save(userEntity);
-    }
-
-    @Transactional
-    public List<UserEntity> findAll() {
-        return userRepo.findAll();
-    }
-
-    @Transactional
-    public UserEntity update(UserDTO updated) {
-        UserEntity userEntity = userRepo.findByUserID(updated.getUserID());
-        userEntity.setName(updated.getName());
-        userEntity.setPassword(updated.getPassword());
-
-        return userEntity;
     }
 }
